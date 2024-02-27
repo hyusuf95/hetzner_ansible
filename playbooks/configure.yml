@@ -1,0 +1,32 @@
+---
+- name: Prepare Ubuntu machine
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update and upgrade system
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Create user
+      user:
+        name: husain
+        state: present
+
+    - name: Add user to Docker group
+      user:
+        name: husain
+        groups: docker
+        append: yes
+
+    - name: Change Docker user password
+      user:
+        name: husain
+        password: "{{ 'new_password' | password_hash('sha512') }}"
+        update_password: always
